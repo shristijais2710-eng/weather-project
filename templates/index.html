@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shristi Weather project | Real‑Time Conditions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <main class="card" aria-labelledby="app-title">
+            <header class="card-header">
+                <div class="brand">
+                    <div class="brand-icon" aria-hidden="true">☀️</div>
+                    <div>
+                        <div id="app-title" class="brand-title">Shristi Weather project</div>
+                        <div class="brand-subtitle">Clean, minimal, real‑time weather</div>
+                    </div>
+                </div>
+                <span class="badge">LIVE • BETA</span>
+            </header>
+
+            <section class="input-group" aria-label="City search">
+                <label for="city" class="label">City</label>
+                <div class="input-row">
+                    <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        placeholder="e.g. Delhi, London, Tokyo"
+                        autocomplete="off"
+                    />
+                    <button class="btn-primary" onclick="getWeather()">
+                        <span>Get Weather</span>
+                    </button>
+                </div>
+                <p id="status" class="status-text"></p>
+            </section>
+
+            <section id="result" class="result-card" aria-live="polite" aria-atomic="true" hidden>
+                <!-- Weather result will be injected here -->
+            </section>
+        </main>
+
+        <footer class="footer">
+            <span>Powered by</span> WeatherAPI · Flask · Vanilla JS
+        </footer>
+    </div>
+
+    <script>
+    function getWeather() {
+        const cityInput = document.getElementById("city");
+        const resultEl = document.getElementById("result");
+        const statusEl = document.getElementById("status");
+
+        const city = cityInput.value.trim();
+
+        if (!city) {
+            statusEl.textContent = "Please enter a city to get started.";
+            resultEl.hidden = true;
+            return;
+        }
+
+        statusEl.textContent = "Fetching live data…";
+        resultEl.hidden = true;
+
+        fetch(`/weather?city=${encodeURIComponent(city)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    statusEl.innerHTML = "";
+                    resultEl.innerHTML = `<p class="error">${data.error}</p>`;
+                    resultEl.hidden = false;
+                } else {
+                    statusEl.textContent = "";
+                    resultEl.innerHTML = `
+                        <div class="result-header">
+                            <div class="result-city">${data.city}</div>
+                            <div class="result-condition">${data.condition}</div>
+                        </div>
+                        <div class="result-grid">
+                            <div>
+                                <div class="result-label">Temperature</div>
+                                <div class="result-value">${data.temp} °C</div>
+                            </div>
+                            <div>
+                                <div class="result-label">Feels like</div>
+                                <div class="result-value">${data.feels} °C</div>
+                            </div>
+                            <div>
+                                <div class="result-label">Humidity</div>
+                                <div class="result-value">${data.humidity} %</div>
+                            </div>
+                            <div>
+                                <div class="result-label">Wind speed</div>
+                                <div class="result-value">${data.wind} kph</div>
+                            </div>
+                        </div>
+                    `;
+                    resultEl.hidden = false;
+                }
+            })
+            .catch(() => {
+                statusEl.textContent = "";
+                resultEl.innerHTML = `<p class="error">Unable to fetch weather data right now. Please try again in a moment.</p>`;
+                resultEl.hidden = false;
+            });
+    }
+
+    // Submit on Enter key
+    document.getElementById("city").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            getWeather();
+        }
+    });
+    </script>
+</body>
+</html>
+
+
