@@ -9,7 +9,12 @@ Global Styles
 
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(rgba(38, 3, 78, 0.7), rgba(2, 6, 23, 0.8));
+    /* layered background: gradient overlay + image (replace path if needed) */
+    background-image: linear-gradient(rgba(38, 3, 78, 0.6), rgba(2, 6, 23, 0.8)), url("../image/YouTube.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -24,7 +29,11 @@ body {
 }
 
 .card {
-    background: rgba(15, 23, 42, 0.9);
+    /* layered background: gradient overlay + image from project image/ folder */
+    background-image: linear-gradient(rgba(2, 6, 23, 0.45), rgba(2, 6, 23, 0.55)), url("../image/YouTube.jpeg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     border-radius: 1.25rem;
     padding: 2rem 2.25rem;
     box-shadow:
